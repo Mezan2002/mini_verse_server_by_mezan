@@ -37,6 +37,14 @@ const run = async () => {
       res.send(result);
     });
     // new post API end
+
+    // get all posts API start
+    app.get("/posts", async (req, res) => {
+      const query = {};
+      const result = await postsCollection.find(query).toArray();
+      res.send(result);
+    });
+    // get all posts API end
   } finally {
     // console.log();
   }
