@@ -1,7 +1,7 @@
 // require start
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -24,6 +24,7 @@ const client = new MongoClient(uri, {
 // collections start
 
 const postsCollection = client.db("miniVerseDB").collection("posts");
+const commentsCollection = client.db("miniVerseDB").collection("comments");
 
 // collections end
 
@@ -45,6 +46,36 @@ const run = async () => {
       res.send(result);
     });
     // get all posts API end
+
+    // like in a post API start
+    app.put("/liked/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedLike = req.body;
+      console.log(updatedLike);
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          likes: updatedLike.likes,
+          liked: updatedLike.liked,
+        },
+      };
+      const result = await postsCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
+    // like in a post API end
+
+    // add comment on a single post API start
+    app.post("/addComments", async (req, res) => {
+      const comment = req.body;
+      const result = await commentsCollection.insertOne(comment);
+      res.send(result);
+    });
+    // add comment on a single post API end
   } finally {
     // console.log();
   }
