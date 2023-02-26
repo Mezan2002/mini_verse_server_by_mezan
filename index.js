@@ -23,6 +23,7 @@ const client = new MongoClient(uri, {
 
 // collections start
 
+const usersCollection = client.db("miniVerseDB").collection("users");
 const postsCollection = client.db("miniVerseDB").collection("posts");
 const commentsCollection = client.db("miniVerseDB").collection("comments");
 
@@ -31,6 +32,14 @@ const commentsCollection = client.db("miniVerseDB").collection("comments");
 // CRUD run function start
 const run = async () => {
   try {
+    // sign up user and post user API start
+    app.post("/signUp", async (req, res) => {
+      const userData = req.body;
+      const result = await usersCollection.insertOne(userData);
+      res.send(result);
+    });
+    // sign up user and post user API end
+
     // new post API start
     app.post("/newPost", async (req, res) => {
       const postedData = req.body;
