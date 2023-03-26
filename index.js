@@ -40,6 +40,16 @@ const run = async () => {
     });
     // sign up user and post user API end
 
+    // get a single users data API start
+    app.get("/usersData", async (req, res) => {
+      const usersEmail = req.query;
+      const query = { email: usersEmail.usersEmail };
+      console.log(query);
+      const result = await usersCollection.findOne(query);
+      res.send(result);
+    });
+    // get a single users data API end
+
     // new post API start
     app.post("/newPost", async (req, res) => {
       const postedData = req.body;
