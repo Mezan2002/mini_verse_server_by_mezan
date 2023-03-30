@@ -42,10 +42,12 @@ const run = async () => {
 
     // get a single users data API start
     app.get("/usersData", async (req, res) => {
-      const usersEmail = req.query;
-      const query = { email: usersEmail.usersEmail };
+      const userCode = req.query;
+      console.log(userCode);
+      const query = { userCode: userCode.userCode };
       console.log(query);
       const result = await usersCollection.findOne(query);
+      console.log(result);
       res.send(result);
     });
     // get a single users data API end
