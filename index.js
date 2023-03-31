@@ -43,14 +43,24 @@ const run = async () => {
     // get a single users data API start
     app.get("/usersData", async (req, res) => {
       const userCode = req.query;
-      console.log(userCode);
       const query = { userCode: userCode.userCode };
-      console.log(query);
       const result = await usersCollection.findOne(query);
-      console.log(result);
       res.send(result);
     });
     // get a single users data API end
+
+    // Login User API Start
+    app.get("/login", async (req, res) => {
+      const email = req.query.email;
+      const password = req.query.password;
+      const query = {
+        "basicInfo.email": email,
+        "basicInfo.password": password,
+      };
+      const result = await usersCollection.findOne(query);
+      res.send(result);
+    });
+    // Login User API End
 
     // new post API start
     app.post("/newPost", async (req, res) => {
