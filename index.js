@@ -62,6 +62,36 @@ const run = async () => {
     });
     // Login User API End
 
+    // Check User Email API Start
+    app.get("/checkEmail/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = {
+        "basicInfo.email": email,
+      };
+      const result = await usersCollection.findOne(query);
+      if (!result) {
+        res.send({ isEmailExist: false });
+      } else {
+        res.send({ isEmailExist: true });
+      }
+    });
+    // Check User Email API End
+
+    // Check User Name API Start
+    app.get("/checkUserName/:userName", async (req, res) => {
+      const userName = req.params.userName;
+      const query = {
+        "basicInfo.userName": userName,
+      };
+      const result = await usersCollection.findOne(query);
+      if (!result) {
+        res.send({ isEmailExist: false });
+      } else {
+        res.send({ isEmailExist: true });
+      }
+    });
+    // Check User Name API End
+
     // new post API start
     app.post("/newPost", async (req, res) => {
       const postedData = req.body;
