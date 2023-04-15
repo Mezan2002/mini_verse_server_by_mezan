@@ -120,6 +120,7 @@ const run = async () => {
       const updatedDoc = {
         $set: {
           likes: updatedLike.likes,
+          postLikedBy: updatedLike.postLikedBy,
         },
       };
       const result = await postsCollection.updateOne(
