@@ -132,6 +132,15 @@ const run = async () => {
     });
     // like in a post API end
 
+    // delete a post API start
+    app.delete("/deletePost/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await postsCollection.deleteOne(query);
+      res.send(result);
+    });
+    // delete a post API end
+
     // add comment on a single post API start
     app.post("/addComments", async (req, res) => {
       const comment = req.body;
