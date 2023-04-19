@@ -25,7 +25,6 @@ const client = new MongoClient(uri, {
 
 const usersCollection = client.db("miniVerseDB").collection("users");
 const postsCollection = client.db("miniVerseDB").collection("posts");
-const commentsCollection = client.db("miniVerseDB").collection("comments");
 
 // collections end
 
@@ -141,13 +140,25 @@ const run = async () => {
     });
     // delete a post API end
 
-    // add comment on a single post API start
-    app.post("/addComments", async (req, res) => {
+    // create a new comment API start
+    app.put("/postComment/:id", async (req, res) => {
+      const id = req.params.id;
       const comment = req.body;
-      const result = await commentsCollection.insertOne(comment);
+      const filter = { _id: ObjectId(id) };
+      const post = await postsCollection.findOne(filter);
+      if (!post) {
+        return res.status(404).send("Post not found");
+      }
+      const updatedComments = [...post.comments, comment];
+      const updatedDoc = {
+        $set: {
+          comments: updatedComments,
+        },
+      };
+      const result = await postsCollection.updateOne(filter, updatedDoc);
       res.send(result);
     });
-    // add comment on a single post API end
+    // create a new comment API end
   } finally {
     // console.log();
   }
