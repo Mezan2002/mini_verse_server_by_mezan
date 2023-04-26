@@ -149,16 +149,41 @@ const run = async () => {
       if (!post) {
         return res.status(404).send("Post not found");
       }
+      const options = { upsert: true };
       const updatedComments = [...post.comments, comment];
       const updatedDoc = {
         $set: {
           comments: updatedComments,
         },
       };
-      const result = await postsCollection.updateOne(filter, updatedDoc);
+      const result = await postsCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
       res.send(result);
     });
     // create a new comment API end
+
+    // reply a comment API start
+    app.put("/posts/:postId/comments/:commentId", async (req, res) => {
+      const postId = req.params.postId;
+      const commentId = req.params.commentId;
+      const postedReplyComment = req.body;
+      const findPost = { _id: ObjectId(postId) };
+      const updatedReplyComment = req.body;
+      const post = await postsCollection.findOne(findPost);
+      const comments = post.comments;
+      const selectedComment = comments.find(
+        (comment) => comment.commentId == commentId
+      );
+      selectedComment.replyComments.push(postedReplyComment);
+      const result = await postsCollection.updateOne(findPost, {
+        $set: { comments },
+      });
+      res.send(result);
+    });
+    // reply a comment API end
   } finally {
     // console.log();
   }
