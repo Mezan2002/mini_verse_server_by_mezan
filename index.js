@@ -171,7 +171,6 @@ const run = async () => {
       const commentId = req.params.commentId;
       const postedReplyComment = req.body;
       const findPost = { _id: ObjectId(postId) };
-      const updatedReplyComment = req.body;
       const post = await postsCollection.findOne(findPost);
       const comments = post.comments;
       const selectedComment = comments.find(
@@ -184,6 +183,31 @@ const run = async () => {
       res.send(result);
     });
     // reply a comment API end
+
+    // delete a comment API start
+    app.delete("/post/:postId/deleteComment/:commentId", async (req, res) => {
+      const postId = req.params.postId;
+      const commentId = req.params.commentId;
+      try {
+        const findPost = { _id: ObjectId(postId) };
+        const updateQuery = {
+          $pull: { comments: { commentId: parseInt(commentId) } },
+        };
+        const result = await postsCollection.updateOne(findPost, updateQuery);
+
+        if (result.modifiedCount === 0) {
+          return res
+            .status(404)
+            .json({ message: "Post or comment not found", isDeleted: false });
+        }
+
+        res.json({ message: "Comment deleted successfully", isDeleted: true });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error", isDeleted: false });
+      }
+    });
+    // delete a comment API end
   } finally {
     // console.log();
   }
