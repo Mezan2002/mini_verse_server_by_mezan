@@ -208,6 +208,47 @@ const run = async () => {
       }
     });
     // delete a comment API end
+
+    // delete a replied comment API start
+    app.delete(
+      "/posts/:postId/comments/:commentId/replies/:replyCommentId",
+      async (req, res) => {
+        const postId = req.params.postId;
+        const commentId = req.params.commentId;
+        const replyCommentId = req.params.replyCommentId;
+        try {
+          const filter = {
+            _id: ObjectId(postId),
+            "comments.commentId": parseInt(commentId),
+          };
+          const update = {
+            $pull: {
+              "comments.$.replyComments": {
+                replyCommentId: parseInt(replyCommentId),
+              },
+            },
+          };
+          const result = await postsCollection.updateOne(filter, update);
+
+          if (result.modifiedCount === 0) {
+            return res.status(404).json({
+              message: "Post, comment or reply not found",
+              isDeleted: false,
+            });
+          }
+
+          res.json({
+            message: "Reply comment deleted successfully",
+            isDeleted: true,
+          });
+        } catch (err) {
+          console.error(err);
+          res.status(500).json({ message: "Server error", isDeleted: false });
+        }
+      }
+    );
+
+    // delete a replied comment API end
   } finally {
     // console.log();
   }
