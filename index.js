@@ -227,6 +227,26 @@ const run = async () => {
     });
     // reply a comment API end
 
+    // edit a comment API start
+    app.put("/posts/:postId/updateComment/:commentId", async (req, res) => {
+      const postId = req.params.postId;
+      const commentId = req.params.commentId;
+      const updatedComment = req.body.editedComment;
+      const filter = {
+        _id: ObjectId(postId),
+        "comments.commentId": parseInt(commentId),
+      };
+      const updatedDoc = {
+        $set: {
+          "comments.$.comment": updatedComment,
+        },
+      };
+      // const findPost = await postsCollection.findOne(filter);
+      const result = await postsCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    });
+    // edit a comment API end
+
     // delete a comment API start
     app.delete("/post/:postId/deleteComment/:commentId", async (req, res) => {
       const postId = req.params.postId;
