@@ -110,7 +110,7 @@ const run = async () => {
     });
     // get all posts API end
 
-    // like in a post API start
+    /* // like in a post API start
     app.put("/liked/:id", async (req, res) => {
       const id = req.params.id;
       const updatedLike = req.body;
@@ -129,7 +129,28 @@ const run = async () => {
       );
       res.send(result);
     });
-    // like in a post API end
+    // like in a post API end */
+
+    // update a post data API start
+    app.put("/updatedPost/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedData = req.body.editedPostText;
+      console.log(updatedData);
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          postedText: updatedData,
+        },
+      };
+      const result = await postsCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
+    // update a post data API end
 
     // delete a post API start
     app.delete("/deletePost/:id", async (req, res) => {
