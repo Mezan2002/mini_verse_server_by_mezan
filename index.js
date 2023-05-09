@@ -152,6 +152,28 @@ const run = async () => {
     });
     // update a post data API end
 
+    // update a post image API start
+    app.put("/updateImage/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedText = req.body.editedPostText;
+      const updatedImage = req.body.updatedImage;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          postedText: updatedText,
+          postedImage: updatedImage,
+        },
+      };
+      const result = await postsCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
+    // update a post image API end
+
     // delete a post API start
     app.delete("/deletePost/:id", async (req, res) => {
       const id = req.params.id;
