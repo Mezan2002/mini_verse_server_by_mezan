@@ -41,8 +41,8 @@ const run = async () => {
 
     // get a single users data API start
     app.get("/usersData", async (req, res) => {
-      const userCode = req.query;
-      const query = { userCode: userCode.userCode };
+      const userCode = req.query.userCode;
+      const query = { userCode: userCode };
       const result = await usersCollection.findOne(query);
       res.send(result);
     });
@@ -56,6 +56,18 @@ const run = async () => {
       res.send(result);
     });
     // get user data for showing profile API end
+
+    // get user posts data API start
+    app.get("/userPosts/:userCode", async (req, res) => {
+      const userCode = req.params.userCode;
+      const query = { "postedBy.userCode": userCode };
+      const result = await postsCollection
+        .find(query)
+        .sort({ postedAt: -1 })
+        .toArray();
+      res.send(result);
+    });
+    // get user posts data API end
 
     // Login User API Start
     app.get("/login", async (req, res) => {
