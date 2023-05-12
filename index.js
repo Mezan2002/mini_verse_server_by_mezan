@@ -48,6 +48,15 @@ const run = async () => {
     });
     // get a single users data API end
 
+    // get user data for showing profile API start
+    app.get("/userData/:userId", async (req, res) => {
+      const userId = req.params.userId;
+      const query = { _id: ObjectId(userId) };
+      const result = await usersCollection.findOne(query);
+      res.send(result);
+    });
+    // get user data for showing profile API end
+
     // Login User API Start
     app.get("/login", async (req, res) => {
       const email = req.query.email;
