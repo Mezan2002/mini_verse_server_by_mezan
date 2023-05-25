@@ -135,7 +135,6 @@ const run = async () => {
     app.put("/liked/:id", async (req, res) => {
       const id = req.params.id;
       const updatedLike = req.body;
-      console.log(updatedLike);
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updatedDoc = {
@@ -156,7 +155,6 @@ const run = async () => {
     app.put("/updatedPost/:id", async (req, res) => {
       const id = req.params.id;
       const updatedData = req.body.editedPostText;
-      console.log(updatedData);
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updatedDoc = {
@@ -241,9 +239,11 @@ const run = async () => {
         (comment) => comment.commentId == commentId
       );
       selectedComment.replyComments.push(postedReplyComment);
-      const result = await postsCollection.updateOne(findPost, {
-        $set: { comments },
-      });
+      const result = await postsCollection
+        .updateOne(findPost, {
+          $set: { comments },
+        })
+        .sort({ repliedAt: -1 });
       res.send(result);
     });
     // reply a comment API end
