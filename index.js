@@ -242,8 +242,7 @@ const run = async () => {
       const result = await postsCollection
         .updateOne(findPost, {
           $set: { comments },
-        })
-        .sort({ repliedAt: -1 });
+        })        
       res.send(result);
     });
     // reply a comment API end
